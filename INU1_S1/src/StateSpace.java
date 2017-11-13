@@ -2,12 +2,10 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Stack;
 
 public class StateSpace {
-    private final Queue<State> queueOpen;
+    private final Stack<State> stackOpen;
     private final HashSet<State> arrayClose;
     private final Graph<State, MOVE> graph;
     private State result;
@@ -15,14 +13,14 @@ public class StateSpace {
     private boolean founded = false;
 
     public StateSpace() {
-        queueOpen = new LinkedList<>();
+        stackOpen = new Stack<>();
         arrayClose = new HashSet<>();
         graph = new Graph<>();
     }
 
     public void setDefaultArray(int[][] array, int blankPointX, int blankPointY) {
         State state = new State(array, blankPointX, blankPointY);
-        queueOpen.add(state);
+        stackOpen.add(state);
         arrayClose.add(state);
         graph.addVertex(state);
         lifeCycle();
@@ -33,7 +31,7 @@ public class StateSpace {
     }
 
     public void run() {
-        while (!queueOpen.isEmpty()) {
+        while (!stackOpen.isEmpty()) {
             if (founded) {
                 break;
             }
@@ -52,7 +50,7 @@ public class StateSpace {
 
 
     public void lifeCycle() {
-        State stateHeader = queueOpen.remove();
+        State stateHeader = stackOpen.pop();
         for (MOVE move : MOVE.values()) {
             State state = stateHeader.move(move);
             if (state == null) {
@@ -61,7 +59,7 @@ public class StateSpace {
 
             if (!isExistStateInCloseList(state)) {
                 arrayClose.add(state);
-                queueOpen.add(state);
+                stackOpen.push(state);
             } else {
                 State.reduceCounter();
             }

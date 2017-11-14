@@ -11,6 +11,7 @@ public class StateSpace {
     private State result;
     private int countPass = 1;
     private boolean founded = false;
+    private int maxLevel = 0;
 
     public StateSpace() {
         stackOpen = new Stack<>();
@@ -39,6 +40,7 @@ public class StateSpace {
             countPass++;
             if (countPass % 10000 == 0) {
                 System.out.println(countPass);
+                System.out.println("VELIKOST ARRAYCLOSE: " + arrayClose.size());
             }
 
         }
@@ -56,10 +58,11 @@ public class StateSpace {
             if (state == null) {
                 continue;
             }
-
-            if (!isExistStateInCloseList(state)) {
+            state.setLevel(stateHeader.getLevel() + 1);
+            if (!isExistStateInCloseList(state) && stateHeader.getLevel() + 1 != maxLevel) {
                 arrayClose.add(state);
                 stackOpen.push(state);
+
             } else {
                 State.reduceCounter();
             }
@@ -99,4 +102,8 @@ public class StateSpace {
         return arrayClose.contains(state);
     }
 
+    public void setMaxLevel(int maxLevel){
+        this.maxLevel = maxLevel;
+    }
+    
 }

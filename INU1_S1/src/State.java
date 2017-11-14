@@ -8,6 +8,15 @@ public class State {
     private final int columns;
     private final int serialNumber;
     private Point blankPoint;
+    private int level = 0;
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
     public State(int[][] array, int blankPointX, int blankPointY) {
         this.array = array;
@@ -38,6 +47,7 @@ public class State {
         StringBuilder builder = new StringBuilder();
         builder.append("My SN: " + serialNumber);
         builder.append(System.lineSeparator());
+        builder.append("LEVEL" + level + System.lineSeparator());
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {

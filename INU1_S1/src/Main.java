@@ -22,6 +22,16 @@ public class Main {
                 { 7, 6, 5 }
         };
 
+        int[][] arrayTest = new int[][] {
+                { 7, 2 },
+                { 5, 0 },
+        };
+
+        int[][] arrayTestResult = new int[][] {
+                { 5, 7 },
+                { 2, 0 },
+        };
+
         int[][] resultState = new int[][] {
                 { 0, 1, 2 },
                 { 3, 4, 5 },
@@ -30,12 +40,15 @@ public class Main {
 
         StateSpace stateSpace = new StateSpace();
         stateSpace.setResult(new State(resultState, 0, 0));
+        stateSpace.setMaxLevel(27);
+        // TESTARRAY
+        // stateSpace.setDefaultArray(arrayTest, 1, 1);
         // ARRAY
-        // stateSpace.setDefaultArray(array, 1, 1);
+        stateSpace.setDefaultArray(array, 1, 1);
         // ARRAY1
         // stateSpace.setDefaultArray(array1, 1, 0);
         // ARRAY2
-        stateSpace.setDefaultArray(array2, 1, 1);
+        // stateSpace.setDefaultArray(array2, 1, 1);
 
         stateSpace.run();
 

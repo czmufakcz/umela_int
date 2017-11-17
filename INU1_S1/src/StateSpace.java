@@ -2,12 +2,16 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 
 public class StateSpace {
     private final Stack<State> stackOpen;
+    private State defaultState;
     private final HashSet<State> arrayClose;
     private final Graph<State, MOVE> graph;
+    private final List<State> pathList;
     private State result;
     private int countPass = 1;
     private boolean founded = false;
@@ -16,15 +20,13 @@ public class StateSpace {
     public StateSpace() {
         stackOpen = new Stack<>();
         arrayClose = new HashSet<>();
+        pathList = new LinkedList<>();
         graph = new Graph<>();
     }
 
     public void setDefaultArray(int[][] array, int blankPointX, int blankPointY) {
-        State state = new State(array, blankPointX, blankPointY);
-        stackOpen.add(state);
-        arrayClose.add(state);
-        graph.addVertex(state);
-        lifeCycle();
+        defaultState = new State(array, blankPointX, blankPointY);
+        stackOpen.add(defaultState);
     }
 
     public void setResult(State state) {
@@ -32,49 +34,54 @@ public class StateSpace {
     }
 
     public void run() {
-        while (!stackOpen.isEmpty()) {
-            if (founded) {
-                break;
-            }
-            lifeCycle();
-            countPass++;
-            if (countPass % 10000 == 0) {
-                System.out.println(countPass);
-                System.out.println("VELIKOST ARRAYCLOSE: " + arrayClose.size());
-            }
+        while (!founded) {
+            while (!stackOpen.isEmpty()) {
+                if (founded) {
+                    break;
+                }
+                lifeCycle();
+                System.out.println("LEVEL " + maxLevel);
+                String foundedString = founded ? "NASEL" : "NENASEL";
+                System.out.println("Vysledek:" + foundedString);
 
+            }
+            stackOpen.push(defaultState);
+            maxLevel++;
         }
-        System.out.println("KONEC " + countPass);
-        System.out.println("Pocet STAVU " + State.counterState());
-        String foundedString = founded ? "NASEL" : "NENASEL";
-        System.out.println("Vysledek:" + foundedString);
+
     }
 
 
     public void lifeCycle() {
-        State stateHeader = stackOpen.pop();
+        State stateHeader = stackOpen.peek();
         for (MOVE move : MOVE.values()) {
             State state = stateHeader.move(move);
-            if (state == null) {
+            if (state == null || stackOpen.contains(state)) {
                 continue;
             }
             state.setLevel(stateHeader.getLevel() + 1);
-            if (!isExistStateInCloseList(state) && stateHeader.getLevel() + 1 != maxLevel) {
-                arrayClose.add(state);
+            if (maxLevel != stateHeader.getLevel()) {
                 stackOpen.push(state);
-
             } else {
-                State.reduceCounter();
+                continue;
             }
-
-            graph.addEdges(stateHeader, state, move);
 
             if (state.equals(result)) {
                 this.founded = true;
                 break;
             }
+            lifeCycle();
+            if (this.founded) {
+                break;
+            }
 
         }
+        if (this.founded == true) {
+            pathList.add(stackOpen.pop());
+        } else {
+            stackOpen.pop();
+        }
+
     }
 
     public Stack<Crate<State, MOVE>> getPredecessors(int[][] array, int blankPointX, int blankPointY) {
@@ -103,7 +110,11 @@ public class StateSpace {
     }
 
     public void setMaxLevel(int maxLevel){
-        this.maxLevel = maxLevel;
+        this.maxLevel = maxLevel + 1;
     }
     
+    public List<State> getPathList() {
+        return pathList;
+    }
+
 }

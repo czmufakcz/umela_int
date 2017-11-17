@@ -1,4 +1,4 @@
-import java.util.Stack;
+import java.util.List;
 
 public class Main {
 
@@ -23,13 +23,13 @@ public class Main {
         };
 
         int[][] arrayTest = new int[][] {
-                { 7, 2 },
-                { 5, 0 },
+                { 7, 2, 4 },
+                { 5, 0, 6 },
         };
 
         int[][] arrayTestResult = new int[][] {
-                { 5, 7 },
-                { 2, 0 },
+                { 0, 2, 4 },
+                { 7, 5, 6 },
         };
 
         int[][] resultState = new int[][] {
@@ -40,7 +40,7 @@ public class Main {
 
         StateSpace stateSpace = new StateSpace();
         stateSpace.setResult(new State(resultState, 0, 0));
-        stateSpace.setMaxLevel(27);
+        // stateSpace.setResult(new State(arrayTestResult, 0, 0));
         // TESTARRAY
         // stateSpace.setDefaultArray(arrayTest, 1, 1);
         // ARRAY
@@ -53,9 +53,9 @@ public class Main {
         stateSpace.run();
 
         System.out.println("Seznam kroku");
-        Stack<Crate<State, MOVE>> stack = stateSpace.getPredecessors(resultState, 0, 0);
-        while (!stack.isEmpty()) {
-            System.out.println(stack.pop().toString());
+        List<State> list = stateSpace.getPathList();
+        for (State state : list) {
+            System.out.println(state.toString());
         }
 
         stateSpace.printCloseList();

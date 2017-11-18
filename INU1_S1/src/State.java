@@ -87,6 +87,28 @@ public class State {
         return true;
     }
 
+    public int getMetric(State state) {
+        int sum = 0;
+        for (int x = 0; x < this.rows; x++) {
+            for (int y = 0; y < this.columns; y++) {
+                Point point = findCoordinate(state, this.array[x][y]);
+                sum = (x - point.x) + (y - point.y);
+            }
+        }
+        return sum;
+    }
+
+    private Point findCoordinate(State state, int value) {
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (value == state.array[i][j]) {
+                    return new Point(i, j);
+                }
+            }
+        }
+        throw new NullPointerException("Coordinate not found");
+    }
+
     private int generateKey() {
         int sum = 0;
         for (int i = 0; i < this.rows; i++) {

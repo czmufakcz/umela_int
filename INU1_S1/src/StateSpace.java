@@ -2,28 +2,26 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 public class StateSpace {
-    private final Queue<State> queueOpen;
-    private final HashSet<State> arrayClose;
+    private final PriorityQueue<State> queueOpen;
     private final Graph<State, MOVE> graph;
+    private final HashSet<State> arrayClose;
     private State result;
     private int countPass = 1;
     private boolean founded = false;
 
     public StateSpace() {
-        queueOpen = new LinkedList<>();
-        arrayClose = new HashSet<>();
+        queueOpen = new PriorityQueue<State>();
         graph = new Graph<>();
+        arrayClose = new HashSet<>();
     }
 
     public void setDefaultArray(int[][] array, int blankPointX, int blankPointY) {
         State state = new State(array, blankPointX, blankPointY);
         queueOpen.add(state);
-        arrayClose.add(state);
         graph.addVertex(state);
         lifeCycle();
     }
@@ -52,17 +50,21 @@ public class StateSpace {
 
 
     public void lifeCycle() {
-        State stateHeader = queueOpen.remove();
+        State stateHeader = queueOpen.poll();
         for (MOVE move : MOVE.values()) {
             State state = stateHeader.move(move);
             if (state == null) {
                 continue;
             }
 
+            state.setHeuresticPlusLenghtPath(state.getMetric(result));
+
             if (!isExistStateInCloseList(state)) {
                 arrayClose.add(state);
                 queueOpen.add(state);
+
             } else {
+
                 State.reduceCounter();
             }
 
@@ -74,7 +76,9 @@ public class StateSpace {
             }
 
         }
+
     }
+
 
     public Stack<Crate<State, MOVE>> getPredecessors(int[][] array, int blankPointX, int blankPointY) {
         return graph.getPredecessors(new State(array, blankPointX, blankPointY));
@@ -100,5 +104,4 @@ public class StateSpace {
     public boolean isExistStateInCloseList(State state) {
         return arrayClose.contains(state);
     }
-
 }

@@ -28,7 +28,18 @@ public class Main {
                 { 6, 7, 8 }
         };
 
+        int[][] arrayTest = new int[][] {
+                { 7, 2 },
+                { 5, 0 },
+        };
+
+        int[][] arrayTestResult = new int[][] {
+                { 7, 5 },
+                { 2, 0 },
+        };
+
         StateSpace stateSpace = new StateSpace();
+        // stateSpace.setResult(new State(arrayTestResult, 2, 2));
         stateSpace.setResult(new State(resultState, 0, 0));
         // ARRAY
         // stateSpace.setDefaultArray(array, 1, 1);
@@ -36,6 +47,8 @@ public class Main {
         // stateSpace.setDefaultArray(array1, 1, 0);
         // ARRAY2
         stateSpace.setDefaultArray(array2, 1, 1);
+        // ARRAY TEST
+        // stateSpace.setDefaultArray(arrayTest, 1, 1);
 
         stateSpace.run();
 

@@ -1,6 +1,6 @@
 import java.awt.Point;
 
-public class State {
+public class State implements Comparable<State> {
     private static int COUNTER_STATE = 0;
 
     private int[][] array;
@@ -8,6 +8,7 @@ public class State {
     private final int columns;
     private final int serialNumber;
     private Point blankPoint;
+    private int heuresticPlusLenghtPath = 0;
 
     public State(int[][] array, int blankPointX, int blankPointY) {
         this.array = array;
@@ -38,7 +39,8 @@ public class State {
         StringBuilder builder = new StringBuilder();
         builder.append("My SN: " + serialNumber);
         builder.append(System.lineSeparator());
-
+        builder.append("My heurestic: " + heuresticPlusLenghtPath);
+        builder.append(System.lineSeparator());
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 builder.append("[" + array[i][j] + "] ");
@@ -73,7 +75,16 @@ public class State {
         int p = newArray[newBlankPoint.y][newBlankPoint.x];
         newArray[newBlankPoint.y][newBlankPoint.x] = newArray[this.blankPoint.y][this.blankPoint.x];
         newArray[this.blankPoint.y][this.blankPoint.x] = p;
+
         return state;
+    }
+
+    public int getHeuresticPlusLenghtPath() {
+        return heuresticPlusLenghtPath;
+    }
+
+    public void setHeuresticPlusLenghtPath(int heuresticPlusLenghtPath) {
+        this.heuresticPlusLenghtPath = heuresticPlusLenghtPath;
     }
 
     public boolean sameArray(State state) {
@@ -92,17 +103,17 @@ public class State {
         for (int x = 0; x < this.rows; x++) {
             for (int y = 0; y < this.columns; y++) {
                 Point point = findCoordinate(state, this.array[x][y]);
-                sum = (x - point.x) + (y - point.y);
+                sum += Math.abs((x - point.x)) + Math.abs((y - point.y));
             }
         }
         return sum;
     }
 
     private Point findCoordinate(State state, int value) {
-        for (int i = 0; i < this.rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                if (value == state.array[i][j]) {
-                    return new Point(i, j);
+        for (int x = 0; x < this.rows; x++) {
+            for (int y = 0; y < this.columns; y++) {
+                if (value == state.array[x][y]) {
+                    return new Point(x, y);
                 }
             }
         }
@@ -140,6 +151,11 @@ public class State {
 
     public static int counterState() {
         return COUNTER_STATE;
+    }
+
+    @Override
+    public int compareTo(State o) {
+        return this.getHeuresticPlusLenghtPath() < o.getHeuresticPlusLenghtPath() ? -1 : this.getHeuresticPlusLenghtPath() > o.getHeuresticPlusLenghtPath() ? +1 : 0;
     }
 
 }

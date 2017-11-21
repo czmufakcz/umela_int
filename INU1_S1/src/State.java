@@ -1,6 +1,6 @@
 import java.awt.Point;
 
-public class State implements Comparable<State> {
+public class State {
     private static int COUNTER_STATE = 0;
 
     private int[][] array;
@@ -8,6 +8,7 @@ public class State implements Comparable<State> {
     private final int columns;
     private final int serialNumber;
     private Point blankPoint;
+    private int deep = 0;
     private int heuresticPlusLenghtPath = 0;
 
     public State(int[][] array, int blankPointX, int blankPointY) {
@@ -98,6 +99,14 @@ public class State implements Comparable<State> {
         return true;
     }
 
+    public void setDeep(int deep) {
+        this.deep = deep;
+    }
+
+    public int getDeep() {
+        return deep;
+    }
+
     public int getMetric(State state) {
         int sum = 0;
         for (int x = 0; x < this.rows; x++) {
@@ -106,7 +115,7 @@ public class State implements Comparable<State> {
                 sum += Math.abs((x - point.x)) + Math.abs((y - point.y));
             }
         }
-        return sum;
+        return sum + deep;
     }
 
     private Point findCoordinate(State state, int value) {
@@ -153,9 +162,5 @@ public class State implements Comparable<State> {
         return COUNTER_STATE;
     }
 
-    @Override
-    public int compareTo(State o) {
-        return this.getHeuresticPlusLenghtPath() < o.getHeuresticPlusLenghtPath() ? -1 : this.getHeuresticPlusLenghtPath() > o.getHeuresticPlusLenghtPath() ? +1 : 0;
-    }
 
 }

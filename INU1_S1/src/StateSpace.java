@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Stack;
@@ -14,14 +15,23 @@ public class StateSpace {
     private boolean founded = false;
 
     public StateSpace() {
-        queueOpen = new PriorityQueue<State>();
+        queueOpen = new PriorityQueue<State>(new StateComparator());
         graph = new Graph<>();
         arrayClose = new HashSet<>();
     }
 
+    class StateComparator implements Comparator<State> {
+        @Override
+        public int compare(State o1, State o2) {
+            return o1.getHeuresticPlusLenghtPath() < o2.getHeuresticPlusLenghtPath() ? -1 : o1.getHeuresticPlusLenghtPath() > o2.getHeuresticPlusLenghtPath() ? +1 : 0;
+        }
+    }
+
     public void setDefaultArray(int[][] array, int blankPointX, int blankPointY) {
         State state = new State(array, blankPointX, blankPointY);
+        state.setHeuresticPlusLenghtPath(state.getMetric(result));
         queueOpen.add(state);
+        arrayClose.add(state);
         graph.addVertex(state);
         lifeCycle();
     }
@@ -56,7 +66,8 @@ public class StateSpace {
             if (state == null) {
                 continue;
             }
-
+            int deep = stateHeader.getDeep() + 1;
+            state.setDeep(deep);
             state.setHeuresticPlusLenghtPath(state.getMetric(result));
 
             if (!isExistStateInCloseList(state)) {
@@ -64,7 +75,6 @@ public class StateSpace {
                 queueOpen.add(state);
 
             } else {
-
                 State.reduceCounter();
             }
 

@@ -34,8 +34,8 @@ public class Main {
         };
 
         int[][] arrayTestResult = new int[][] {
-                { 7, 5 },
-                { 2, 0 },
+                { 5, 7 },
+                { 0, 2 },
         };
 
         StateSpace stateSpace = new StateSpace();
@@ -44,9 +44,9 @@ public class Main {
         // ARRAY
         // stateSpace.setDefaultArray(array, 1, 1);
         // ARRAY1
-        // stateSpace.setDefaultArray(array1, 1, 0);
+        stateSpace.setDefaultArray(array1, 1, 0);
         // ARRAY2
-        stateSpace.setDefaultArray(array2, 1, 1);
+        // stateSpace.setDefaultArray(array2, 1, 1);
         // ARRAY TEST
         // stateSpace.setDefaultArray(arrayTest, 1, 1);
 
@@ -58,7 +58,7 @@ public class Main {
             System.out.println(stack.pop().toString());
         }
 
-        stateSpace.printCloseList();
+        // stateSpace.printCloseList();
     }
 
 }
